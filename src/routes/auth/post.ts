@@ -1,8 +1,8 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 import { HTTPException } from 'hono/http-exception';
 import { sign } from 'hono/jwt';
-import { type HonoEnv } from '../../env.ts';
 import { genericErrorHandler } from '../../error-handler.ts';
+import type { Env } from '../../server.ts';
 
 const RequestBodySchema = z.object({
     username: z.string(),
@@ -48,7 +48,7 @@ const AuthRoute = createRoute({
     },
 });
 
-export const post = new OpenAPIHono<HonoEnv>()
+export const post = new OpenAPIHono<Env>()
     .openapi(AuthRoute, async c => {
         const { username, password } = c.req.valid('json');
         // HARDCODED: credential check, there is no registration endpoint & flow yet

@@ -4,15 +4,23 @@
 
 See `./src/env.ts` for the necessary environment variables and their allowed values.
 
-A dummy development `.env.dev` file is already included to get you up to speed.
+There is a distinction between server env vars related to the hosting environment, and env vars related to the runtime logic.
 
-For production deployments, set _real_ environment variables.
+
 ## Building for "production"
 
 1. Run the `npm run build` command in the repository root.
-1. An optimized bundle is built to `./dist`.
+1. An optimized bundle is built to `./dist/server.js`.
 
-## How to traverse API implementation code?
+The resulting bundle can be ran with node.
+Don't forget to set the necessary env vars.
+
+
+## Running tests
+
+Run the `npm test` command in the repository root.
+
+
 ## How to get started with traversing the source code
 
 Start from `./src/index.ts` and follow the routers to the endpoint you'd like to adjust.
@@ -20,10 +28,10 @@ Start from `./src/index.ts` and follow the routers to the endpoint you'd like to
 
 ## How to run locally for development
 
-1. Ensure `node` and `npm` are installed. See `./package.json` for compatible versions.
+1. Ensure `node` and `npm` are installed. See `./package.json` "engines" property for compatible versions.
 1. Install `mongod` for your development platform.
 1. Set up environment variables: copy `.env.dev.example` to `.env.dev`.
-1. Run the following commands inside the repository root:
+1. Run the following commands inside the repository root (long-running commands, use separate terminals):
   - `npm run start-db`: starts the database
   - `npm start`: starts the API server in watch mode
 
@@ -32,21 +40,21 @@ Start from `./src/index.ts` and follow the routers to the endpoint you'd like to
 
 ### Code-first
 
-OpenAPI specifications and environment variable specification are defined as code.
+OpenAPI specifications and environment variable specifications are defined as code.
 
 Reasons:
 - Single source of truth for spec, runtime validation and typing: reduces human error potential & less overall code
 - Endpoint specs live in the same file as their implementation: eases code reviews
 
-To make this setup even safer, implement `openapi-diff` in CI, checking for backwards compatibility of merge request branches to their target branch.
-To make this setup even safer, implement `openapi-diff` in CI to check for backwards compatibility issues of merge request branches to their target branch.
+To prevent any breakings changes to the user-facing API, implement `openapi-diff` in CI to check for backwards compatibility issues of merge request branches to their target branch.
 
 ### Leverage NodeJS runtime and modules
 
-For leanness and learning sake, let's use new NodeJS features to learn something and maybe reduce dependencies.
+For leanness' and learning's sake, let's use new NodeJS features as much as possible.
 
+- `node-ts`? Built-in type stripping!
 - `nodemon`? `node --watch`!
-- `vitest`? `node:test`!
+- `jest`? `node:test` & `node:assert`!
 
 ### ORM-less
 
@@ -63,3 +71,7 @@ See `./src/mongo/mongo-strict-collection.ts`.
 In a production viable implementation, users can follow a registration flow.
 Which would result in for example a database entry for said user with a salt and hashed password.
 This entry can later be used to validate a user's password sent with an authentication attempt.
+
+### API access logging
+
+In a production implementation, having server logs could be used to analyse abuse.
