@@ -4,6 +4,10 @@
     "description": "NodeJS skill assessment",
     "main": "src/server.ts",
     "type": "module",
+    "engines": {
+        "node": ">=23",
+        "npm": ">=10"
+    },
     "scripts": {
         "start-db": "mkdir -p mongo/logs mongo/data && mongod --config ./.mongod.dev.conf",
         "start": "dotenv -e .env.dev -- node --watch ./src/server.ts",
