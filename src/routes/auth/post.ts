@@ -4,28 +4,18 @@ import { sign } from 'hono/jwt';
 import { env } from '../../env.ts';
 import { genericErrorHandler } from '../../error-handler.ts';
 
-const get = new OpenAPIHono();
-
 const RequestBodySchema = z.object({
     username: z.string(),
     password: z.string(),
 });
 
-const TokenSchema = z
-    .object({
-        token: z.string(),
-    })
-    .openapi('Token')
-    ;
+const TokenSchema = z.object({
+    token: z.string(),
+}).openapi('Token');
 
 const AuthRoute = createRoute({
     method: 'post',
     path: '/',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
     tags: [
         'Authentication',
     ],
@@ -58,19 +48,18 @@ const AuthRoute = createRoute({
     },
 });
 
-get.onError(genericErrorHandler);
-
-get.openapi(AuthRoute, async c => {
-    const { username, password } = c.req.valid('json');
-    // HARDCODED: credential check, there is no registration endpoint & flow yet
-    const validUsername = 'aviobook';
-    const validPassword = 'assessment';
-    const hasValidCredentials = username === validUsername && password === validPassword;
-    if (!hasValidCredentials)
-        throw new HTTPException(400);
-    const secret = env.JWT_SECRET;
-    const token = await sign({ username }, secret, 'HS512');
-    return c.json({ token });
-});
-
-export { get };
+export const post = new OpenAPIHono()
+    .openapi(AuthRoute, async c => {
+        const { username, password } = c.req.valid('json');
+        // HARDCODED: credential check, there is no registration endpoint & flow yet
+        const validUsername = 'aviobook';
+        const validPassword = 'assessment';
+        const hasValidCredentials = username === validUsername && password === validPassword;
+        if (!hasValidCredentials)
+            throw new HTTPException(400, { message: 'Please use hardcoded credentials: username "aviobook" password "assessment".' });
+        const secret = env.JWT_SECRET;
+        const token = await sign({ username }, secret, 'HS512');
+        return c.json({ token }, 200);
+    })
+    .onError(genericErrorHandler)
+    ;
