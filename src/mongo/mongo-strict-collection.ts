@@ -4,14 +4,16 @@ import type { z, ZodArray, ZodType } from 'zod';
 /** Single-source-of-truth typing and runtime validation of input and output of a MongoDB collection. */
 export class MongoStrictCollection<S extends Document> {
     private collection: Collection;
+    private schema: ZodType<S>;
     private schemaAll: ZodArray<ZodType<S>>;
 
     constructor(
         database: Db,
         collectionName: string,
-        private schema: ZodType<S>,
+        schema: ZodType<S>,
     ) {
         this.collection = database.collection(collectionName);
+        this.schema = schema;
         this.schemaAll = this.schema.array();
     }
 

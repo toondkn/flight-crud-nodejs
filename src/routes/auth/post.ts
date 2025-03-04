@@ -1,17 +1,19 @@
-import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
+import { createRoute, OpenAPIHono } from '@hono/zod-openapi';
 import { HTTPException } from 'hono/http-exception';
 import { sign } from 'hono/jwt';
-import { genericErrorHandler } from '../../error-handler.ts';
-import type { Env } from '../../server.ts';
+import { AuthenticationRequest } from '../../schemas/authentication-request.ts';
+import { TokenResponse } from '../../schemas/token-response.ts';
+import type { AuthEnv } from './index.ts';
 
-const RequestBodySchema = z.object({
-    username: z.string(),
-    password: z.string(),
-});
+export const signatureAlgo = 'HS512';
 
-const TokenSchema = z.object({
-    token: z.string(),
-}).openapi('Token');
+type UnixTimestamp = number;
+
+export type AuthPayload = {
+    exp: UnixTimestamp;
+    iat: UnixTimestamp;
+    username: string;
+};
 
 const AuthRoute = createRoute({
     method: 'post',
@@ -25,7 +27,7 @@ const AuthRoute = createRoute({
         body: {
             content: {
                 'application/json': {
-                    schema: RequestBodySchema,
+                    schema: AuthenticationRequest,
                 },
             },
         },
@@ -35,7 +37,7 @@ const AuthRoute = createRoute({
             description: 'Successful operation',
             content: {
                 'application/json': {
-                    schema: TokenSchema,
+                    schema: TokenResponse,
                 },
             },
         },
@@ -48,19 +50,20 @@ const AuthRoute = createRoute({
     },
 });
 
-export const post = new OpenAPIHono<Env>()
+export const post = new OpenAPIHono<AuthEnv>()
     .openapi(AuthRoute, async c => {
         const { username, password } = c.req.valid('json');
-        // HARDCODED: credential check, there is no registration endpoint & flow yet
+        // HARDCODED: credential check
         const validUsername = 'aviobook';
         const validPassword = 'assessment';
         const hasValidCredentials = username === validUsername && password === validPassword;
         if (!hasValidCredentials)
             throw new HTTPException(400, { message: 'Please use hardcoded credentials: username "aviobook" password "assessment".' });
+        const iat = Math.floor(Date.now() / 1000);
+        const exp = iat + Math.floor(c.env.JWT_VALIDITY_IN_MINUTES * 60);
+        const payload: AuthPayload = { iat, exp, username };
         const secret = c.env.JWT_SECRET;
-        const token = await sign({ username }, secret, 'HS512');
+        const token = await sign(payload, secret, signatureAlgo);
         return c.json({ token }, 200);
     })
-    // TODO: handle errors with the .openapi native interface
-    .onError(genericErrorHandler)
     ;

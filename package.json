@@ -11,8 +11,8 @@
     "scripts": {
         "start-db": "mkdir -p mongo/logs mongo/data && mongod --config ./.mongod.dev.conf",
         "start": "dotenv -e .env.dev -- node --watch ./src/server.ts",
-        "build": "node ./build.js",
-        "test": "node --test"
+        "build": "tsc --erasableSyntaxOnly && node ./build.ts",
+        "test": "node --test --no-warnings"
     },
     "repository": {
         "type": "git",
@@ -34,10 +34,10 @@
     },
     "devDependencies": {
         "@types/mongodb-memory-server": "^1.8.0",
-        "@types/node": "^22.13.5",
+        "@types/node": "^22.13.9",
         "dotenv-cli": "^8.0.0",
         "esbuild": "^0.25.0",
         "mongodb-memory-server": "^10.1.4",
-        "typescript": "^5.7.3"
+        "typescript": "^5.8.2"
     }
 }

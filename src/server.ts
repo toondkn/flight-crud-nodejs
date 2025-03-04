@@ -2,17 +2,16 @@ import { serve } from '@hono/node-server';
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { loadEnvSchema, ServerEnvSchema } from './env.ts';
-import { mongoMiddleware, type MongoEnv } from './middlewares/mongo.ts';
 import { nodeEnvMiddleware } from './middlewares/node-env.ts';
-import { schemaEnvMiddleware, type SchemaEnv } from './middlewares/schema-env.ts';
-import { auth } from './routes/auth.ts';
+import { strictEnvMiddleware, type SchemaEnv } from './middlewares/strict-env.ts';
+import { index } from './routes/index.ts';
 
 const nodeEnv = loadEnvSchema(ServerEnvSchema, process.env);
 const port = nodeEnv.SERVER_PORT;
 
-export type Env = SchemaEnv & MongoEnv;
+export type ServerEnv = SchemaEnv;
 
-const api = new OpenAPIHono<Env>()
+const api = new OpenAPIHono<ServerEnv>()
     .doc('/openapi/doc', {
         openapi: '3.0.3',
         info: {
@@ -22,9 +21,8 @@ const api = new OpenAPIHono<Env>()
     })
     .get('/openapi', swaggerUI({ url: '/openapi/doc' }))
     .use('*', nodeEnvMiddleware)
-    .use('*', schemaEnvMiddleware)
-    .use('*', mongoMiddleware)
-    .route('/auth', auth)
+    .use('*', strictEnvMiddleware)
+    .route('/', index)
     ;
 
 serve({
