@@ -1,17 +1,18 @@
+import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
-import { HTTPException } from 'hono/http-exception';
 import { authRouter } from './routes/auth.ts';
 
-const indexRouter = new OpenAPIHono();
+const api = new OpenAPIHono();
 
-// TODO: add automatically inferred openAPI spec and serve it as webpage
+api.route('/auth', authRouter);
 
-indexRouter.onError((e, c) => {
-    console.error(`${e.name} - ${e.message}: ${e.cause ?? 'Unknown cause.'}`);
-    if (e instanceof HTTPException)
-        return c.text(e.message, e.status);
-    return c.text('Something went wrong', 500);
+api.doc('/openapi/doc', {
+    openapi: '3.0.3',
+    info: {
+        version: '1.0.0',
+        title: 'Aviobook Code Challenge',
+    },
 });
-indexRouter.route('/auth', authRouter);
+api.get('/openapi', swaggerUI({ url: '/openapi/doc' }));
 
-export { indexRouter };
+export { api };

@@ -1,14 +1,17 @@
-import type { Collection, Document, ObjectId, OptionalUnlessRequiredId } from 'mongodb';
+import type { Collection, Db, Document, ObjectId, OptionalUnlessRequiredId } from 'mongodb';
 import type { z, ZodArray, ZodType } from 'zod';
 
 /** Single-source-of-truth typing and runtime validation of input and output of a MongoDB collection. */
 export class MongoStrictCollection<S extends Document> {
+    private collection: Collection;
     private schemaAll: ZodArray<ZodType<S>>;
 
     constructor(
-        private collection: Collection<z.infer<ZodType<S>>>,
+        database: Db,
+        collectionName: string,
         private schema: ZodType<S>,
     ) {
+        this.collection = database.collection(collectionName);
         this.schemaAll = this.schema.array();
     }
 
