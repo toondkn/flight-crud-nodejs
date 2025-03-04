@@ -1,6 +1,7 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 import { HTTPException } from 'hono/http-exception';
 import { sign } from 'hono/jwt';
+import { env } from '../../env.ts';
 import { genericErrorHandler } from '../../error-handler.ts';
 
 const get = new OpenAPIHono();
@@ -67,9 +68,8 @@ get.openapi(AuthRoute, async c => {
     const hasValidCredentials = username === validUsername && password === validPassword;
     if (!hasValidCredentials)
         throw new HTTPException(400);
-    // TODO: properly load and validate environment variables
-    const secret = process.env.JWT_SECRET as string;
-    const token = await sign({ username }, secret);
+    const secret = env.JWT_SECRET;
+    const token = await sign({ username }, secret, 'HS512');
     return c.json({ token });
 });
 
