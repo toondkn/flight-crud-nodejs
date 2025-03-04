@@ -3,7 +3,8 @@ import { z, ZodError } from 'zod';
 const EnvSchema = z.object({
     SERVER_PORT: z.coerce.number().min(0).max(65535),
     // Brute force protection: minimum recommendation for HSA512 hashing is a secret of at least 64 bytes.
-    JWT_SECRET: z.coerce.string().min(64),
+    JWT_SECRET: z.string().min(64),
+    MONGO_URL: z.string().regex(/^(mongodb(?:\+srv)?:\/\/)(?:(?:[^:@]+?):(?:[^:@]+?)@)?(?:[^@\/?]+?)(?::\d+)?(?:\/[^?]*)?(?:\?.*)?$/),
 });
 
 let env: z.infer<typeof EnvSchema>;

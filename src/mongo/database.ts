@@ -1,7 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { env } from '../env.ts';
 
-const mongoUrl = process.env.MONGO_URL;
-if (mongoUrl === undefined)
-    throw new Error('Please set the MONGO_URL environment variable.');
-const client = new MongoClient(mongoUrl);
+const client = new MongoClient(env.MONGO_URL);
 export const database = client.db();
