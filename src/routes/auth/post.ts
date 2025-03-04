@@ -1,7 +1,7 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 import { HTTPException } from 'hono/http-exception';
 import { sign } from 'hono/jwt';
-import { env } from '../../env.ts';
+import { type HonoEnv } from '../../env.ts';
 import { genericErrorHandler } from '../../error-handler.ts';
 
 const RequestBodySchema = z.object({
@@ -48,7 +48,7 @@ const AuthRoute = createRoute({
     },
 });
 
-export const post = new OpenAPIHono()
+export const post = new OpenAPIHono<HonoEnv>()
     .openapi(AuthRoute, async c => {
         const { username, password } = c.req.valid('json');
         // HARDCODED: credential check, there is no registration endpoint & flow yet
@@ -57,9 +57,10 @@ export const post = new OpenAPIHono()
         const hasValidCredentials = username === validUsername && password === validPassword;
         if (!hasValidCredentials)
             throw new HTTPException(400, { message: 'Please use hardcoded credentials: username "aviobook" password "assessment".' });
-        const secret = env.JWT_SECRET;
+        const secret = c.env.JWT_SECRET;
         const token = await sign({ username }, secret, 'HS512');
         return c.json({ token }, 200);
     })
+    // TODO: handle errors with the .openapi native interface
     .onError(genericErrorHandler)
     ;

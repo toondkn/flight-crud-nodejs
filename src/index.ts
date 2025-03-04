@@ -1,5 +1,6 @@
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
+import { honoSafeEnvMiddleware } from './env.ts';
 import { auth } from './routes/auth.ts';
 
 export const api = new OpenAPIHono()
@@ -10,6 +11,7 @@ export const api = new OpenAPIHono()
             title: 'Aviobook Code Challenge',
         },
     })
+    .use('*', honoSafeEnvMiddleware)
     .get('/openapi', swaggerUI({ url: '/openapi/doc' }))
     .route('/auth', auth)
     ;

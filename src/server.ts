@@ -1,8 +1,8 @@
 import { serve } from '@hono/node-server';
-import { env } from './env.ts';
+import { getServerEnv } from './env.ts';
 import { api } from './index.ts';
 
-const port = env.SERVER_PORT;
+const port = getServerEnv().SERVER_PORT;
 
 serve({
     fetch: api.fetch,
