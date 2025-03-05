@@ -19,14 +19,6 @@ describe('/flights GET list', async () => {
                 },
             });
     });
-    it('returns 401 when jwt is invalid', async () => {
-        const res = await client.flights.$get({
-            header: {
-                Authorization: 'Bearer fake_token',
-            },
-        });
-        assert.strictEqual(res.status, 401);
-    });
     it('returns 200 and a list of flights', async () => {
         const jwt = await getJwt(client);
         const res = await client.flights.$get({
@@ -37,5 +29,13 @@ describe('/flights GET list', async () => {
         assert.strictEqual(res.status, 200);
         const json = await res.json();
         assert.strictEqual(json.length, flightCount);
+    });
+    it('returns 401 when jwt is invalid', async () => {
+        const res = await client.flights.$get({
+            header: {
+                Authorization: 'Bearer fake_token',
+            },
+        });
+        assert.strictEqual(res.status, 401);
     });
 });
