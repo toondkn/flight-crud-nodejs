@@ -60,8 +60,7 @@ For leanness' and learning's sake, let's use new NodeJS features as much as poss
 
 ### ORM-less
 
-MongoDB already leans so closely to JSON/JavaScript, an ORM is another moving part to learn for juniors that provides minimal benefits, if any.
-For now, `zod` can provide us with all we need.
+MongoDB already leans so closely to JSON/JavaScript, for now, `zod` can provide us with all we need.
 A minimal zod wrapper around mongo collection input/output gives us typing and runtime guarantees in both directions.
 See `./src/mongo/mongo-strict-collection.ts`.
 
@@ -69,6 +68,7 @@ See `./src/mongo/mongo-strict-collection.ts`.
 ## Future improvements
 
 - Crud operation generation for a mongo collection schema
+- MongoDB schemas
 
 
 ## Known omissions
