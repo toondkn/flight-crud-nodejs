@@ -28,7 +28,7 @@ describe('/flights POST', async () => {
         assert.strictEqual(res.status, 201);
         const flight = await res.json();
         assert.partialDeepStrictEqual(flight, flightData);
-        const persistedFlight = await collections.flights.findById(flight.id);
+        const persistedFlight = await collections.flights.findOne(flight.id);
         assert.deepStrictEqual(persistedFlight, flightData);
     });
     it('returns 400 when json body fails validation', async () => {

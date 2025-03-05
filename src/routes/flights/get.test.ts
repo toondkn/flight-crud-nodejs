@@ -6,7 +6,7 @@ import { getJwt } from '../../test-utils/auth.ts';
 import { fakeObjectIdStr } from '../../test-utils/mongo.ts';
 import { createRoutesClient } from '../../test-utils/routes.ts';
 
-describe('/flights DELETE', async () => {
+describe('/flights GET', async () => {
     const { client, collections } = await createRoutesClient();
     const jwt = await getJwt(client);
     const flightData: z.infer<typeof Flight> = {
@@ -20,8 +20,8 @@ describe('/flights DELETE', async () => {
         destination: 'IVAO',
     };
     const flightId = await collections.flights.insertOne(flightData);
-    it('returns 204 and the flight is removed from the collection', async () => {
-        const res = await client.flights[':flightId'].$delete({
+    it('returns 200 and the flight', async () => {
+        const res = await client.flights[':flightId'].$get({
             header: {
                 Authorization: `Bearer ${jwt}`,
             },
@@ -29,12 +29,13 @@ describe('/flights DELETE', async () => {
                 flightId,
             },
         });
-        assert.strictEqual(res.status, 204);
-        assert.rejects(collections.flights.findOne(flightId));
+        assert.strictEqual(res.status, 200);
+        const flight = await res.json();
+        assert.partialDeepStrictEqual(flight, flightData);
         ;
     });
     it('returns 401 when jwt is invalid', async () => {
-        const res = await client.flights[':flightId'].$delete({
+        const res = await client.flights[':flightId'].$get({
             header: {
                 Authorization: 'Bearer fake_token',
             },
@@ -45,7 +46,7 @@ describe('/flights DELETE', async () => {
         assert.strictEqual(res.status, 401);
     });
     it('returns 404 when the flight is not found', async () => {
-        const res = await client.flights[':flightId'].$delete({
+        const res = await client.flights[':flightId'].$get({
             header: {
                 Authorization: `Bearer ${jwt}`,
             },

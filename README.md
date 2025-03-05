@@ -66,6 +66,11 @@ A minimal zod wrapper around mongo collection input/output gives us typing and r
 See `./src/mongo/mongo-strict-collection.ts`.
 
 
+## Future improvements
+
+- Crud operation generation for a mongo collection schema
+
+
 ## Known omissions
 
 ### Hardcoded auth credentials
@@ -77,3 +82,7 @@ This entry can later be used to validate a user's password sent with an authenti
 ### API access logging
 
 In a production implementation, having server logs could be used to analyse abuse.
+
+### OpenAPI security schemes definition
+
+There is probably a way to add this to the in-code specification.

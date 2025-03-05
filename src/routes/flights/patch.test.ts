@@ -37,7 +37,7 @@ describe('/flights PATCH', async () => {
         assert.strictEqual(res.status, 200);
         const flight = await res.json();
         assert.partialDeepStrictEqual(flight, updatedFlightData);
-        const updatedPersistedFlight = await collections.flights.findById(flightId);
+        const updatedPersistedFlight = await collections.flights.findOne(flightId);
         assert.deepStrictEqual(updatedPersistedFlight, updatedFlightData);
     });
     it('returns 400 when received data is not valid', async () => {

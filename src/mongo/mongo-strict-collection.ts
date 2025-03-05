@@ -38,7 +38,7 @@ export class MongoStrictCollection<S extends Document> {
             throw new DocumentIdNotFoundError();
     }
 
-    async findById(id: string): Promise<S | null> {
+    async findOne(id: string): Promise<S | null> {
         const result = await this.collection.findOne({ _id: new ObjectId(id) });
         return this.schema.parse(result);
     }
