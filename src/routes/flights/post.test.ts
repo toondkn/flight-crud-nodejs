@@ -1,10 +1,9 @@
 import assert from 'node:assert/strict';
-import { before, describe, it } from 'node:test';
-import { getJwt } from '../../test-utils/auth.ts';
-import { createRoutesClient } from '../../test-utils/routes.ts';
+import { describe, it } from 'node:test';
 import type { z } from 'zod';
 import type { Flight } from '../../schemas/flight.ts';
-import { ObjectId } from 'mongodb';
+import { getJwt } from '../../test-utils/auth.ts';
+import { createRoutesClient } from '../../test-utils/routes.ts';
 
 describe('/flights POST', async () => {
     const { client, collections } = await createRoutesClient();
@@ -29,7 +28,7 @@ describe('/flights POST', async () => {
         assert.strictEqual(res.status, 201);
         const flight = await res.json();
         assert.partialDeepStrictEqual(flight, flightData);
-        const persistedFlight = await collections.flights.findById(new ObjectId(flight.id));
+        const persistedFlight = await collections.flights.findById(flight.id);
         assert.deepStrictEqual(persistedFlight, flightData);
     });
     it('returns 400 when json body fails validation', async () => {

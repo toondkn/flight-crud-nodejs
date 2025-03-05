@@ -17,14 +17,14 @@ export class MongoStrictCollection<S extends Document> {
         this.schemaAll = this.schema.array();
     }
 
-    async insertOne(data: S): Promise<ObjectId> {
-        const parsed = this.schema.parse(data) as OptionalUnlessRequiredId<S>;
+    async insertOne(data: S): Promise<string> {
+        const parsed = this.schema.parse(data);
         const result = await this.collection.insertOne(parsed);
-        return result.insertedId;
+        return result.insertedId.toString();
     }
 
-    async findById(id: OptionalUnlessRequiredId<S>['_id']): Promise<S | null> {
-        const result = await this.collection.findOne({ _id: id });
+    async findById(id: string): Promise<S | null> {
+        const result = await this.collection.findOne({ _id: new ObjectId(id) });
         return this.schema.parse(result);
     }
 
