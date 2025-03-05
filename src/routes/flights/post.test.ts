@@ -18,7 +18,7 @@ describe('/flights POST', async () => {
         departure: 'AVIO',
         destination: 'IVAO',
     };
-    it('returns 201, the created flight, and flight is added to collection', async () => {
+    it('returns 201 and the created flight, flight is added to collection', async () => {
         const res = await client.flights.$post({
             header: {
                 Authorization: `Bearer ${jwt}`,
@@ -26,10 +26,10 @@ describe('/flights POST', async () => {
             json: flightData,
         });
         assert.strictEqual(res.status, 201);
-        const flight = await res.json();
-        assert.partialDeepStrictEqual(flight, flightData);
-        const persistedFlight = await collections.flights.findOne(flight.id);
-        assert.deepStrictEqual(persistedFlight, flightData);
+        const json = await res.json();
+        assert.partialDeepStrictEqual(json, flightData);
+        const persistedFlight = await collections.flights.findOne(json.id);
+        assert.deepStrictEqual(persistedFlight, json);
     });
     it('returns 400 when json body fails validation', async () => {
         const res = await client.flights.$post({

@@ -50,8 +50,7 @@ const Route = createRoute({
 export const post = new OpenAPIHono<FlightsEnv>()
     .openapi(Route, async c => {
         const flightData = c.req.valid('json');
-        const id = await c.env.mongo.flights.insertOne(flightData);
-        const flight = { id, ...flightData };
+        const flight = await c.env.mongo.flights.insertOne(flightData);
         return c.json(flight, 201);
     })
     ;

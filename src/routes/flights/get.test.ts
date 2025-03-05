@@ -19,19 +19,19 @@ describe('/flights GET', async () => {
         departure: 'AVIO',
         destination: 'IVAO',
     };
-    const flightId = await collections.flights.insertOne(flightData);
+    const flight = await collections.flights.insertOne(flightData);
     it('returns 200 and the flight', async () => {
         const res = await client.flights[':flightId'].$get({
             header: {
                 Authorization: `Bearer ${jwt}`,
             },
             param: {
-                flightId,
+                flightId: flight.id,
             },
         });
         assert.strictEqual(res.status, 200);
-        const flight = await res.json();
-        assert.partialDeepStrictEqual(flight, flightData);
+        const json = await res.json();
+        assert.partialDeepStrictEqual(json, flight);
         ;
     });
     it('returns 401 when jwt is invalid', async () => {
@@ -40,7 +40,7 @@ describe('/flights GET', async () => {
                 Authorization: 'Bearer fake_token',
             },
             param: {
-                flightId,
+                flightId: flight.id,
             },
         });
         assert.strictEqual(res.status, 401);

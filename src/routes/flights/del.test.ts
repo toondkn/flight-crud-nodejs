@@ -19,19 +19,18 @@ describe('/flights DELETE', async () => {
         departure: 'AVIO',
         destination: 'IVAO',
     };
-    const flightId = await collections.flights.insertOne(flightData);
+    const flight = await collections.flights.insertOne(flightData);
     it('returns 204 and the flight is removed from the collection', async () => {
         const res = await client.flights[':flightId'].$delete({
             header: {
                 Authorization: `Bearer ${jwt}`,
             },
             param: {
-                flightId,
+                flightId: flight.id,
             },
         });
         assert.strictEqual(res.status, 204);
-        assert.rejects(collections.flights.findOne(flightId));
-        ;
+        assert.rejects(collections.flights.findOne(flight.id));
     });
     it('returns 401 when jwt is invalid', async () => {
         const res = await client.flights[':flightId'].$delete({
@@ -39,7 +38,7 @@ describe('/flights DELETE', async () => {
                 Authorization: 'Bearer fake_token',
             },
             param: {
-                flightId,
+                flightId: flight.id,
             },
         });
         assert.strictEqual(res.status, 401);

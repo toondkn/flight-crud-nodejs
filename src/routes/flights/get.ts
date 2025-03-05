@@ -48,8 +48,7 @@ export const get = new OpenAPIHono<FlightsEnv>()
     .openapi(Route, async c => {
         const { flightId } = c.req.valid('param');
         try {
-            const flightData = await c.env.mongo.flights.findOne(flightId);
-            const flight = { id: flightId, ...flightData };
+            const flight = await c.env.mongo.flights.findOne(flightId);
             return c.json(flight, 200);
         }
         catch (e) {

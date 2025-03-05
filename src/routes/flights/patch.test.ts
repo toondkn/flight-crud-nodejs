@@ -19,8 +19,8 @@ describe('/flights PATCH', async () => {
         departure: 'AVIO',
         destination: 'IVAO',
     };
-    const flightId = await collections.flights.insertOne(flightData);
-    it('returns 200, the updated flight, and the flight is updated in the collection', async () => {
+    const flight = await collections.flights.insertOne(flightData);
+    it('returns 200 and the updated flight, flight is updated in the collection', async () => {
         const updatedFlightData = {
             ...flightData,
             aircraft: 'AVIO-UPD',
@@ -30,15 +30,15 @@ describe('/flights PATCH', async () => {
                 Authorization: `Bearer ${jwt}`,
             },
             param: {
-                flightId,
+                flightId: flight.id,
             },
             json: updatedFlightData,
         });
         assert.strictEqual(res.status, 200);
-        const flight = await res.json();
-        assert.partialDeepStrictEqual(flight, updatedFlightData);
-        const updatedPersistedFlight = await collections.flights.findOne(flightId);
-        assert.deepStrictEqual(updatedPersistedFlight, updatedFlightData);
+        const json = await res.json();
+        assert.partialDeepStrictEqual(json, updatedFlightData);
+        const updatedPersistedFlight = await collections.flights.findOne(flight.id);
+        assert.deepStrictEqual(updatedPersistedFlight, json);
     });
     it('returns 400 when received data is not valid', async () => {
         const res = await client.flights[':flightId'].$patch({
@@ -46,7 +46,7 @@ describe('/flights PATCH', async () => {
                 Authorization: `Bearer ${jwt}`,
             },
             param: {
-                flightId,
+                flightId: flight.id,
             },
             json: {
                 ...flightData,
@@ -62,7 +62,7 @@ describe('/flights PATCH', async () => {
                 Authorization: 'Bearer fake_token',
             },
             param: {
-                flightId,
+                flightId: flight.id,
             },
             json: flightData,
         });

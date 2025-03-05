@@ -65,12 +65,11 @@ export const patch = new OpenAPIHono<FlightsEnv>()
         const { flightId } = c.req.valid('param');
         const flightData = c.req.valid('json');
         try {
-            await c.env.mongo.flights.replaceOne(flightId, flightData);
+            const flight = await c.env.mongo.flights.replaceOne(flightId, flightData);
+            return c.json(flight, 200);
         }
         catch (e) {
             throw new HTTPException(404);
         }
-        const flight = { id: flightId, ...flightData };
-        return c.json(flight, 200);
     })
     ;
