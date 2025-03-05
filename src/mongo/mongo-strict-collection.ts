@@ -1,5 +1,5 @@
 import type { Collection, Db, Document, ObjectId, OptionalUnlessRequiredId } from 'mongodb';
-import type { z, ZodArray, ZodType } from 'zod';
+import type { ZodArray, ZodType } from 'zod';
 
 /** Single-source-of-truth typing and runtime validation of input and output of a MongoDB collection. */
 export class MongoStrictCollection<S extends Document> {
