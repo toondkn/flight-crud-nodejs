@@ -18,6 +18,16 @@ const api = new OpenAPIHono<ServerEnv>()
             version: '1.0.0',
             title: 'Aviobook Code Challenge',
         },
+        tags: [
+            {
+                name: 'Authentication',
+                description: 'Everything authentication related',
+            },
+            {
+                name: 'Flights',
+                description: 'Flight resources'
+            },
+        ],
     })
     .get('/openapi', swaggerUI({ url: '/openapi/doc' }))
     .use('*', strictEnvMiddleware(process.env))
