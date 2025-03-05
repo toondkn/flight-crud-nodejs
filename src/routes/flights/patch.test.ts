@@ -57,10 +57,14 @@ describe('/flights PATCH', async () => {
         assert.strictEqual(res.status, 400);
     });
     it('returns 401 when jwt is invalid', async () => {
-        const res = await client.flights.$get({
+        const res = await client.flights[':flightId'].$patch({
             header: {
                 Authorization: 'Bearer fake_token',
             },
+            param: {
+                flightId: 'fake_id',
+            },
+            json: flightData,
         });
         assert.strictEqual(res.status, 401);
     });
