@@ -3,10 +3,12 @@ import { describe, it } from 'node:test';
 import type { z } from 'zod';
 import type { Flight } from '../../schemas/flight.ts';
 import { getJwt } from '../../test-utils/auth.ts';
+import { fakeObjectIdStr } from '../../test-utils/mongo.ts';
 import { createRoutesClient } from '../../test-utils/routes.ts';
 
 describe('/flights PATCH', async () => {
     const { client, collections } = await createRoutesClient();
+    const jwt = await getJwt(client);
     const flightData: z.infer<typeof Flight> = {
         aircraft: 'AVIO',
         flightNumber: 'AVIO1',
@@ -19,7 +21,6 @@ describe('/flights PATCH', async () => {
     };
     const flightId = await collections.flights.insertOne(flightData);
     it('returns 200, the updated flight, and the flight is updated in the collection', async () => {
-        const jwt = await getJwt(client);
         const updatedFlightData = {
             ...flightData,
             aircraft: 'AVIO-UPD',
@@ -40,7 +41,6 @@ describe('/flights PATCH', async () => {
         assert.deepStrictEqual(updatedPersistedFlight, updatedFlightData);
     });
     it('returns 400 when received data is not valid', async () => {
-        const jwt = await getJwt(client);
         const res = await client.flights[':flightId'].$patch({
             header: {
                 Authorization: `Bearer ${jwt}`,
@@ -62,20 +62,19 @@ describe('/flights PATCH', async () => {
                 Authorization: 'Bearer fake_token',
             },
             param: {
-                flightId: 'fake_id',
+                flightId,
             },
             json: flightData,
         });
         assert.strictEqual(res.status, 401);
     });
     it('returns 404 when the flight is not found', async () => {
-        const jwt = await getJwt(client);
         const res = await client.flights[':flightId'].$patch({
             header: {
                 Authorization: `Bearer ${jwt}`,
             },
             param: {
-                flightId: 'fake_id',
+                flightId: fakeObjectIdStr,
             },
             json: flightData,
         });

@@ -1,6 +1,8 @@
 import { ObjectId, type Collection, type Db, type Document } from 'mongodb';
 import type { ZodArray, ZodType } from 'zod';
 
+class DocumentIdNotFoundError extends Error { }
+
 /** Single-source-of-truth typing and runtime validation of input and output of a MongoDB collection. */
 export class MongoStrictCollection<S extends Document> {
     private collection: Collection;
@@ -25,7 +27,15 @@ export class MongoStrictCollection<S extends Document> {
 
     async replaceOne(id: string, data: S) {
         const parsed = this.schema.parse(data);
-        await this.collection.replaceOne({ _id: new ObjectId(id) }, parsed);
+        const result = await this.collection.replaceOne({ _id: new ObjectId(id) }, parsed);
+        if (result.matchedCount === 0)
+            throw new DocumentIdNotFoundError();
+    }
+
+    async deleteOne(id: string) {
+        const result = await this.collection.deleteOne({ _id: new ObjectId(id) });
+        if (result.deletedCount === 0)
+            throw new DocumentIdNotFoundError();
     }
 
     async findById(id: string): Promise<S | null> {

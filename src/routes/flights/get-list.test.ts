@@ -5,6 +5,7 @@ import { createRoutesClient } from '../../test-utils/routes.ts';
 
 describe('/flights GET list', async () => {
     const { client, collections } = await createRoutesClient();
+    const jwt = await getJwt(client);
     const flightCount = 5;
     before(async () => {
         for (let i = 0; i < flightCount; i++)
@@ -20,7 +21,6 @@ describe('/flights GET list', async () => {
             });
     });
     it('returns 200 and a list of flights', async () => {
-        const jwt = await getJwt(client);
         const res = await client.flights.$get({
             header: {
                 Authorization: `Bearer ${jwt}`,
