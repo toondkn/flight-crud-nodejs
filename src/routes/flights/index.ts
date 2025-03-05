@@ -1,6 +1,7 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { jwtAuthMiddleware, type JwtAuthEnv } from '../../middlewares/jwt-auth.ts';
 import type { ServerEnv } from '../../server.ts';
+import { del } from './del.ts';
 import { getList } from './get-list.ts';
 import { patch } from './patch.ts';
 import { post } from './post.ts';
@@ -12,4 +13,5 @@ export const flights = new OpenAPIHono<FlightsEnv>()
     .route('/', getList)
     .route('/', post)
     .route('/', patch)
+    .route('/', del)
     ;
