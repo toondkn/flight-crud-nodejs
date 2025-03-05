@@ -3,7 +3,7 @@ import { AuthorizationHeader } from '../../schemas/authorization-header.ts';
 import { Flight } from '../../schemas/flight.ts';
 import type { FlightsEnv } from './index.ts';
 
-const AuthRoute = createRoute({
+const Route = createRoute({
     method: 'post',
     path: '/',
     security: [
@@ -48,7 +48,7 @@ const AuthRoute = createRoute({
 });
 
 export const post = new OpenAPIHono<FlightsEnv>()
-    .openapi(AuthRoute, async c => {
+    .openapi(Route, async c => {
         const flightData = c.req.valid('json');
         const id = await c.env.mongo.flights.insertOne(flightData);
         const flight = { id, ...flightData };

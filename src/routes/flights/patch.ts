@@ -4,7 +4,7 @@ import { AuthorizationHeader } from '../../schemas/authorization-header.ts';
 import { Flight } from '../../schemas/flight.ts';
 import type { FlightsEnv } from './index.ts';
 
-const AuthRoute = createRoute({
+const Route = createRoute({
     method: 'patch',
     path: '/{flightId}',
     security: [
@@ -61,7 +61,7 @@ const AuthRoute = createRoute({
 });
 
 export const patch = new OpenAPIHono<FlightsEnv>()
-    .openapi(AuthRoute, async c => {
+    .openapi(Route, async c => {
         const { flightId } = c.req.valid('param');
         const flightData = c.req.valid('json');
         try {

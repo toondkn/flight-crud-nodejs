@@ -16,7 +16,7 @@ export type AuthPayload = {
     username: string;
 };
 
-const AuthRoute = createRoute({
+const Route = createRoute({
     method: 'post',
     path: '/',
     tags: [
@@ -52,7 +52,7 @@ const AuthRoute = createRoute({
 });
 
 export const post = new OpenAPIHono<AuthEnv>()
-    .openapi(AuthRoute, async c => {
+    .openapi(Route, async c => {
         const { username, password } = c.req.valid('json');
         // HARDCODED: credential check
         const validUsername = 'aviobook';
