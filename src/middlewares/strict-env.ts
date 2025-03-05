@@ -6,7 +6,7 @@ export type SchemaEnv = {
     Bindings: z.infer<typeof EnvSchema>;
 };
 
-export const strictEnvMiddleware: MiddlewareHandler<SchemaEnv> = async (c, next) => {
-    c.env = loadEnvSchema(EnvSchema, c.env);
+export const strictEnvMiddleware: (env: Record<string, string | undefined>) => MiddlewareHandler<SchemaEnv> = env => async (c, next) => {
+    c.env = loadEnvSchema(EnvSchema, env);
     await next();
 };

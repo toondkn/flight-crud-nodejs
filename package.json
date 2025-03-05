@@ -11,7 +11,7 @@
     "scripts": {
         "start-db": "mkdir -p mongo/logs mongo/data && mongod --config ./.mongod.dev.conf",
         "start": "dotenv -e .env.dev -- node --watch ./src/server.ts",
-        "build": "tsc --erasableSyntaxOnly && node ./build.ts",
+        "build": "tsc --noEmit --erasableSyntaxOnly && node ./build.ts",
         "test": "node --test --no-warnings"
     },
     "repository": {

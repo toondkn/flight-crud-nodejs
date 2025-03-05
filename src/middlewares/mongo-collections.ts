@@ -14,9 +14,9 @@ export type MongoEnv = {
     };
 };
 
-export const mongoDataMiddleware: MiddlewareHandler<SchemaEnv & MongoEnv> = async (c, next) => {
-    const client = new MongoClient(c.env.MONGO_URL);
-    const db = client.db();
+export const mongoCollectionsMiddleware: MiddlewareHandler<SchemaEnv & MongoEnv> = async (c, next) => {
+    const client = new MongoClient(c.env.MONGO_URI);
+    const db = client.db('aviobook');
     c.env.mongo = createCollections(db);
     await next();
 };

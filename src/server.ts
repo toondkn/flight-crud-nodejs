@@ -1,15 +1,15 @@
 import { serve } from '@hono/node-server';
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono } from '@hono/zod-openapi';
-import { loadEnvSchema, ServerEnvSchema } from './env.ts';
-import { nodeEnvMiddleware } from './middlewares/node-env.ts';
+import { mongoCollectionsMiddleware, type MongoEnv } from './middlewares/mongo-collections.ts';
 import { strictEnvMiddleware, type SchemaEnv } from './middlewares/strict-env.ts';
 import { index } from './routes/index.ts';
+import { loadEnvSchema, ServerEnvSchema } from './schemas/env.ts';
 
 const nodeEnv = loadEnvSchema(ServerEnvSchema, process.env);
 const port = nodeEnv.SERVER_PORT;
 
-export type ServerEnv = SchemaEnv;
+export type ServerEnv = SchemaEnv & MongoEnv;
 
 const api = new OpenAPIHono<ServerEnv>()
     .doc('/openapi/doc', {
@@ -20,8 +20,8 @@ const api = new OpenAPIHono<ServerEnv>()
         },
     })
     .get('/openapi', swaggerUI({ url: '/openapi/doc' }))
-    .use('*', nodeEnvMiddleware)
-    .use('*', strictEnvMiddleware)
+    .use('*', strictEnvMiddleware(process.env))
+    .use('*', mongoCollectionsMiddleware)
     .route('/', index)
     ;
 

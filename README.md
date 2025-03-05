@@ -23,7 +23,9 @@ Run the `npm test` command in the repository root.
 
 ## How to get started with traversing the source code
 
-Start from `./src/index.ts` and follow the routers to the endpoint you'd like to adjust.
+Start from `./src/routes/index.ts` and follow the routers to the endpoint you'd like to adjust.
+Server setup, and environment variables and mongodb collections injection happens in `./src/server.ts`.
+All routes are tested from a full routing setup, ensuring high fidelity testing with any middlewares that might get registered.
 
 
 ## How to run locally for development

@@ -7,3 +7,5 @@ export function createCollections(db: Db) {
         flights: new MongoStrictCollection(db, 'flights', Flight),
     };
 }
+
+export type Collections = ReturnType<typeof createCollections>;
