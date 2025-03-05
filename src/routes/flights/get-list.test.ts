@@ -3,7 +3,7 @@ import { before, describe, it } from 'node:test';
 import { getJwt } from '../../test-utils/auth.ts';
 import { createRoutesClient } from '../../test-utils/routes.ts';
 
-describe('/flights GET', async () => {
+describe('/flights GET list', async () => {
     const { client, collections } = await createRoutesClient();
     const flightCount = 5;
     before(async () => {
@@ -14,8 +14,8 @@ describe('/flights GET', async () => {
                 departure: 'LPPD',
                 destination: 'LPLA',
                 schedule: {
-                    std: new Date(),
-                    sta: new Date(),
+                    std: new Date().toISOString(),
+                    sta: new Date().toISOString(),
                 },
             });
     });

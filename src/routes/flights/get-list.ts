@@ -3,7 +3,7 @@ import { AuthorizationHeader } from '../../schemas/authorization-header.ts';
 import { Flight } from '../../schemas/flight.ts';
 import type { FlightsEnv } from './index.ts';
 
-const AuthRoute = createRoute({
+const GetListRoute = createRoute({
     method: 'get',
     path: '/',
     security: [
@@ -37,8 +37,8 @@ const AuthRoute = createRoute({
     },
 });
 
-export const getAll = new OpenAPIHono<FlightsEnv>()
-    .openapi(AuthRoute, async c => {
+export const getList = new OpenAPIHono<FlightsEnv>()
+    .openapi(GetListRoute, async c => {
         const flights = await c.env.mongo.flights.findAll();
         return c.json(flights, 200);
     })

@@ -9,6 +9,7 @@ export const signatureAlgo = 'HS512';
 
 type UnixTimestamp = number;
 
+// TODO: move me to schemas in schema form
 export type AuthPayload = {
     exp: UnixTimestamp;
     iat: UnixTimestamp;
