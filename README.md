@@ -1,25 +1,5 @@
 # Aviobook NodeJS assessment: flights CRUD
 
-## Environment variables
-
-See `./src/env.ts` for the necessary environment variables and their allowed values.
-
-There is a distinction between server env vars related to the hosting environment, and env vars related to the runtime logic.
-
-
-## Building for "production"
-
-1. Run the `npm run build` command in the repository root.
-1. An optimized bundle is built to `./dist/server.js`.
-
-The resulting bundle can be ran with node.
-Don't forget to set the necessary env vars.
-
-
-## Running tests
-
-Run the `npm test` command in the repository root.
-
 
 ## How to get started with traversing the source code
 
@@ -38,7 +18,28 @@ All routes are tested from a full routing setup, ensuring high fidelity testing 
   - `npm start`: starts the API server in watch mode
 
 
-## Philosophy
+## Running tests
+
+Run the `npm test` command in the repository root.
+
+
+## Environment variables
+
+See `./src/schema/env.ts` for the necessary environment variables and their allowed values.
+
+There is a distinction between server env vars related to the hosting environment, and env vars related to the runtime logic.
+
+
+## Building for "production"
+
+1. Run the `npm run build` command in the repository root.
+1. An optimized bundle is built to `./dist/server.js`.
+
+The resulting bundle can be ran with node.
+Don't forget to set the necessary env vars.
+
+
+## Principles
 
 ### Code-first
 
@@ -54,9 +55,9 @@ To prevent any breakings changes to the user-facing API, implement `openapi-diff
 
 For leanness' and learning's sake, let's use new NodeJS features as much as possible.
 
-- `node-ts`? Built-in type stripping!
-- `nodemon`? `node --watch`!
-- `jest`? `node:test` & `node:assert`!
+- `node-ts`? Built-in type stripping
+- `nodemon`? `node --watch`
+- `jest`? `node:test` & `node:assert`
 
 ### ORM-less
 
